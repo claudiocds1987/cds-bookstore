@@ -1,0 +1,39 @@
+//color de fondo
+.mat-toolbar.mat-primary {
+    background: #6200EE;
+    // color: #fff;
+  }
+
+  .sidenav-container {
+    height: 100%;
+  }
+  
+  .sidenav {
+    width: 200px;
+  }
+  
+  .sidenav .mat-toolbar {
+    background: inherit;
+  }
+  
+  .mat-toolbar.mat-primary {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  
+  .header-row {
+    width: 100%;
+  }
+
+  .row {
+    margin-top: 10px !important;
+  }
+
+  .box{
+    max-width: 300px;
+    height: 300px;
+    background-color: #6200EE;
+    margin: 10px auto;
+  }
+  
