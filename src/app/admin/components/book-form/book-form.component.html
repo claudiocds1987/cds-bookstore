@@ -1,0 +1,46 @@
+<div class="row pt-4">
+    <div class="col-md-5">
+        <div class="card card-body pt-4">
+            <h3 class="text-center"><b>Create book</b></h3>
+            <form (ngSubmit)="addBook()">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="name" [(ngModel)]="book.name" placeholder="Book name">
+                </div>
+                <div class="form-group">
+                    <input type="number" class="form-control" name="year" [(ngModel)]="book.year" placeholder="year">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="author" [(ngModel)]="book.author" placeholder="Author">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="category" [(ngModel)]="book.category" placeholder="Category">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="editorial" [(ngModel)]="book.editorial" placeholder="Editorial">
+                </div>
+                <div class="form-group">
+                    <textarea class="form-control" name="description" [(ngModel)]="book.description" placeholder="Description..."></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="quantity" [(ngModel)]="book.quantity" placeholder="Quantity">
+                </div>
+                <div class="form-group">
+                    <input type="number" class="form-control" name="price" step="0.01" [(ngModel)]="book.price" placeholder="Price $">
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-dark btn-block">
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                        Save
+                    </button>
+                    <button type="reset" class="btn btn-warning btn-block text-white">Reset
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <app-books></app-books>
+    </div>    
+</div>
+
