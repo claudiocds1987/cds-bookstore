@@ -12,7 +12,7 @@ import { ProductListComponent } from './components/products/product-list/product
 import { MaterialModule } from './../material/material.module';
 import { BooksComponent } from './components/books/books.component';
 import { BookFormComponent } from './components/book-form/book-form.component';
-
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [ProductComponent, NavComponent, ProductsComponent, ProductListComponent, BooksComponent, BookFormComponent],
@@ -21,6 +21,7 @@ import { BookFormComponent } from './components/book-form/book-form.component';
     FormsModule,
     AdminRoutingModule,
     MaterialModule,
+    ReactiveFormsModule,
     RouterModule
   ]
 })

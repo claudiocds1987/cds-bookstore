@@ -1,34 +1,74 @@
 <div class="row pt-4">
     <div class="col-md-5">
         <div class="card card-body pt-4">
-            <h3 class="text-center"><b>Create book</b></h3>
-            <form (ngSubmit)="addBook()">
+            <h3 class="text-center"><b>Create book</b></h3>           
+            <form [formGroup]="form" (ngSubmit)="addBook($event)">
+
                 <div class="form-group">
-                    <input type="text" class="form-control" name="name" [(ngModel)]="book.name" placeholder="Book name">
+                    <input type="text" class="form-control" formControlName="name" [(ngModel)]="book.name" placeholder="Book name">
+                    <div *ngIf="form.get('name').errors && form.get('name').dirty">
+                        <p class="text-center mt-1" *ngIf="form.get('name').hasError('required')">Este campo es obligatorio!</p>
+                        <p class="text-center mt-1" *ngIf="form.get('name').hasError('maxlength')">El nombre es muy largo!</p>                             
+                    </div>                  
                 </div>
+
                 <div class="form-group">
-                    <input type="number" class="form-control" name="year" [(ngModel)]="book.year" placeholder="year">
+                    <input type="number" class="form-control" formControlName="year" [(ngModel)]="book.year" placeholder="year">
+                    <div *ngIf="form.get('year').errors && form.get('year').dirty">
+                        <p class="text-center mt-1" *ngIf="form.get('year').hasError('required')">Este campo es obligatorio!</p>
+                        <p class="text-center mt-1" *ngIf="form.get('year').hasError('max')">El año es invalido!</p>      
+                    </div> 
                 </div>
+
                 <div class="form-group">
-                    <input type="text" class="form-control" name="author" [(ngModel)]="book.author" placeholder="Author">
+                    <input type="text" class="form-control" formControlName="author" [(ngModel)]="book.author" placeholder="Author">
+                    <div *ngIf="form.get('author').errors && form.get('author').dirty">
+                        <p class="text-center mt-1" *ngIf="form.get('author').hasError('required')">Este campo es obligatorio!</p>      
+                    </div> 
                 </div>
+
                 <div class="form-group">
-                    <input type="text" class="form-control" name="category" [(ngModel)]="book.category" placeholder="Category">
+                    <input type="text" class="form-control" formControlName="category" [(ngModel)]="book.category" placeholder="Category">
+                    <div *ngIf="form.get('category').errors && form.get('category').dirty">
+                        <p class="text-center mt-1" *ngIf="form.get('category').hasError('required')">Este campo es obligatorio!</p>      
+                    </div> 
                 </div>
+
                 <div class="form-group">
-                    <input type="text" class="form-control" name="editorial" [(ngModel)]="book.editorial" placeholder="Editorial">
+                    <input type="text" class="form-control" formControlName="editorial" [(ngModel)]="book.editorial" placeholder="Editorial">
+                    <div *ngIf="form.get('editorial').errors && form.get('editorial').dirty">
+                        <p class="text-center mt-1" *ngIf="form.get('editorial').hasError('required')">Este campo es obligatorio!</p>      
+                    </div> 
                 </div>
+
                 <div class="form-group">
-                    <textarea class="form-control" name="description" [(ngModel)]="book.description" placeholder="Description..."></textarea>
+                    <textarea class="form-control" formControlName="description" [(ngModel)]="book.description" placeholder="Description..."></textarea>
+                    <div *ngIf="form.get('description').errors && form.get('description').dirty">
+                        <p class="text-center mt-1" *ngIf="form.get('description').hasError('required')">Este campo es obligatorio!</p>
+                        <p class="text-center mt-1" *ngIf="form.get('description').hasError('maxlength')">La descripción es muy larga!</p>           
+                    </div> 
                 </div>
+
                 <div class="form-group">
-                    <input type="text" class="form-control" name="quantity" [(ngModel)]="book.quantity" placeholder="Quantity">
+                    <input type="number" class="form-control" formControlName="quantity" [(ngModel)]="book.quantity" placeholder="Quantity">
+                    <div *ngIf="form.get('quantity').errors && form.get('quantity').dirty">
+                        <p class="text-center mt-1" *ngIf="form.get('quantity').hasError('required')">Este campo es obligatorio!</p>
+                        <p class="text-center mt-1" *ngIf="form.get('quantity').hasError('pattern')">Este!</p>      
+                    </div> 
                 </div>
+
                 <div class="form-group">
-                    <input type="number" class="form-control" name="price" step="0.01" [(ngModel)]="book.price" placeholder="Price $">
+                    <input type="number" class="form-control" formControlName="price" step="0.01" [(ngModel)]="book.price" placeholder="Price $">
+                    <div *ngIf="form.get('price').errors && form.get('price').dirty">
+                        <p class="text-center mt-1" *ngIf="form.get('price').hasError('required')">Este campo es obligatorio!</p>
+                        
+                    </div> 
                 </div>
+                <!-- <div class="form-group">
+                    <input type="number" class="form-control" formControlName="image"  [(ngModel)]="book.img" placeholder="img">
+                </div> -->
                 <div class="text-center">
-                    <button type="submit" class="btn btn-dark btn-block">
+                    <button [disabled]="form.invalid" type="submit" class="btn btn-dark btn-block">
                         <i class="fa fa-floppy-o" aria-hidden="true"></i>
                         Save
                     </button>
@@ -43,4 +83,3 @@
         <app-books></app-books>
     </div>    
 </div>
-
