@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 // services
 import { BookService } from '../../../core/services/book/book.service';
+import { AuthorService } from '../../../core/services/author/author.service';
 import { ToastrService } from 'ngx-toastr';
-// clase Book
+// clase Book, Author
 import { Book } from 'src/app/core/models/book';
+import { Author} from 'src/app/core/models/author';
 // formuluario
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 import { MyValidators } from '../../../utils/myValidators';
-import { ConvertActionBindingResult } from '@angular/compiler/src/compiler_util/expression_converter';
-
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-book-form',
@@ -20,6 +21,9 @@ export class BookFormComponent implements OnInit {
 
   cad: string;
   form: FormGroup;
+  // array de tipo Autor en vacio
+  authorList: Author[] = [];
+  authorList$: Observable<Author[]>;
   book = {} as Book; // declaro un objeto Book vacio, no es un array
   // obteniendo año actual
   today = new Date();
@@ -27,6 +31,7 @@ export class BookFormComponent implements OnInit {
 
   constructor(
     public bookService: BookService,
+    public authorService: AuthorService,
     private toastr: ToastrService,
     private formBuilder: FormBuilder
     ) {
@@ -35,6 +40,12 @@ export class BookFormComponent implements OnInit {
     }
 
   ngOnInit(): void {
+    this.authorList$ = this.authorService.getAuthors();
+    // this.authorService.getAuthors()
+    // .subscribe(author => {
+    //   // console.log(books);
+    //   this.authorList = author;
+    // });
   }
 
   buildForm() {
@@ -55,6 +66,8 @@ export class BookFormComponent implements OnInit {
 
   addBook(event: Event) {
     event.preventDefault();
+    this.book = this.form.value;
+    console.log(this.book);
     if (this.form.valid){
       if (confirm('¿Esta seguro/a que desea agregar el producto?')){
         // obtengo los valores del formulario
@@ -62,10 +75,25 @@ export class BookFormComponent implements OnInit {
         // inserta el producto en la db firestore
         this.bookService.addBook(this.book);
         // para limpiar el formulario
+        this.form.reset();
         this.book = {} as Book;
         this.toastr.success('Operación exitosa', 'Producto agregado!');
+        // this.form.controls['btn-submmit'].enable();
       }
     }
+  }
+
+  cleanUnnecessaryWhiteSpaces(cadena: string){
+    const cleanString = cadena.replace(/\s{2,}/g, ' ').trim();
+    return cleanString;
+  }
+
+  // Esta funcion se llama desde el <select> de autores
+  changeSuit(e) {
+    // obtengo el control select y le paso el valor seleccionado en el html
+    this.form.get('author').setValue(e.target.value, {
+       onlySelf: true
+    });
   }
 
 }
