@@ -70,9 +70,16 @@
                         
                     </div> 
                 </div>
-                <!-- <div class="form-group">
-                    <input type="number" class="form-control" formControlName="image"  [(ngModel)]="book.img" placeholder="img">
-                </div> -->
+
+                <div class="form-group">
+                    <img *ngIf="(image$ | async) as image" [src]="image" alt="">
+                    <input type="file" class="form-control" 
+                    formControlName="image" 
+                    [(ngModel)]="book.image" 
+                    placeholder="img"
+                    (change)="onFileSelected($event)">
+                </div>
+
                 <div class="text-center">
                     <button [disabled]="form.invalid" type="submit" class="btn btn-dark btn-block">
                         <i class="fa fa-floppy-o" aria-hidden="true"></i>

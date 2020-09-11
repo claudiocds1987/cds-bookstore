@@ -8,8 +8,11 @@ import { Book } from 'src/app/core/models/book';
 import { Author} from 'src/app/core/models/author';
 // formuluario
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
-
 import { Observable } from 'rxjs';
+// Angular firestorage para guardar la imagen
+import { AngularFireStorage } from '@angular/fire/storage';
+// finalize es un pipe que hace el proceso de finalizacion al subir la imagen
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-book-form',
@@ -23,16 +26,20 @@ export class BookFormComponent implements OnInit {
   // array de tipo Autor en vacio
   authorList: Author[] = [];
   authorList$: Observable<Author[]>;
+  image$: Observable<any>;
   book = {} as Book; // declaro un objeto Book vacio, no es un array
   // obteniendo año actual
   today = new Date();
   year = this.today.getFullYear();
 
+ selectedFile = null;
+
   constructor(
     public bookService: BookService,
     public authorService: AuthorService,
     private toastr: ToastrService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private storage: AngularFireStorage
     ) {
       // function buildForm
       this.buildForm();
@@ -73,6 +80,10 @@ export class BookFormComponent implements OnInit {
         this.book = this.form.value;
         // inserta el producto en la db firestore
         this.bookService.addBook(this.book);
+
+        // guardo la imagen en firestorage
+        this.onUploadFile();
+
         // para limpiar el formulario
         this.form.reset();
         this.book = {} as Book;
@@ -94,5 +105,60 @@ export class BookFormComponent implements OnInit {
        onlySelf: true
     });
   }
+
+// esta va en input file
+  onFileSelected(event) {
+    // obtengo el archivo completo de la img (nombre, tipo, tamaño, etc..)
+    this.selectedFile = event.target.files[0];
+    console.log(this.selectedFile);
+
+  }
+
+  onUploadFile() {
+    // obtengo solo el nombre de la imagen
+    const name = this.selectedFile.name;
+    const fileRef = this.storage.ref(name);
+    // subo imagen a firestorage con el nombre y todas sus prop(tipo, tamaño, etc..)
+    const task = this.storage.upload(name, this.selectedFile);
+
+    // task.snapshotChanges()
+    // .pipe(
+    //   // finalize notifica cuando termina de subir la imagen
+    //   finalize(() => {
+    //     this.image$ = fileRef.getDownloadURL();
+    //     this.image$.subscribe(url => {
+    //       console.log(url);
+    //       // le paso la url de la img guardada firestorage, para mostar la img en el input image
+    //       this.form.get('image').setValue(url);
+    //     });
+    //   })
+    // )
+    // .subscribe();
+  }
+
+
+  // uploadFile(event) {
+  //   // obtengo el archivo completo de la img (nombre, tipo, tamaño, etc..)
+  //   const file = event.target.files[0];
+  //   // obtengo solo el nombre de la imagen
+  //   const name = file.name;
+  //   const fileRef = this.storage.ref(name);
+  //   // subo imagen a firestorage con el nombre y todas sus prop(tipo, tamaño, etc..)
+  //   const task = this.storage.upload(name, file);
+
+  //   task.snapshotChanges()
+  //   .pipe(
+  //     // finalize notifica cuando termina de subir la imagen
+  //     finalize(() => {
+  //       this.image$ = fileRef.getDownloadURL();
+  //       this.image$.subscribe(url => {
+  //         console.log(url);
+  //         // le paso la url al image de mi form.group
+  //         this.form.get('image').setValue(url);
+  //       });
+  //     })
+  //   )
+  //   .subscribe();
+  // }
 
 }

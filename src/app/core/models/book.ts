@@ -8,5 +8,6 @@ export interface Book {
     description: string;
     quantity: number;
     price: number;
+    image: string;
     state: boolean;
 }

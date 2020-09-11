@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 // services
 import { AuthService } from './core/services/auth.service';
@@ -12,7 +12,8 @@ import { map, tap } from 'rxjs/operators';
 export class AdminGuard implements CanActivate {
 
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
 
   }
@@ -23,9 +24,14 @@ export class AdminGuard implements CanActivate {
     return this.authService.hasUser().pipe(
       // tap hace una intercepcion de los datos sin detener el flujo (no puede modificarlos ni nada).
       // lo utilizo para que por consola muestre si el dato es null o no.
-      tap(user => console.log(user)),
       // si no hay usuario devolve false sino true
-      map(user => user === null ? false : true)
+      map(user => user === null ? false : true),
+      tap(hasUser => {
+        if (!hasUser){
+          // si no existe el usuario redirecciono a auth/login
+          this.router.navigate(['/auth/login']);
+        }
+      }),
     );
   }
 
