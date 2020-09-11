@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { map, shareReplay } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+// services
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-nav',
@@ -13,7 +15,8 @@ export class NavComponent implements OnInit {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) { }
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -23,6 +26,15 @@ export class NavComponent implements OnInit {
     );
 
   ngOnInit(): void {
+  }
+
+  logOut() {
+    // hago el logOut
+    this.authService.logOut()
+    // redirijo a la pagina de login
+    .then(() => {
+      this.router.navigate(['./auth/login']);
+    });
   }
 
 }

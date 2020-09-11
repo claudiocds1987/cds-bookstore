@@ -14,8 +14,16 @@ import { BooksComponent } from './components/books/books.component';
 import { BookFormComponent } from './components/book-form/book-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
+
 @NgModule({
-  declarations: [ProductComponent, NavComponent, ProductsComponent, ProductListComponent, BooksComponent, BookFormComponent],
+  declarations: [
+    ProductComponent,
+    NavComponent,
+    ProductsComponent,
+    ProductListComponent,
+    BooksComponent,
+    BookFormComponent
+    ],
   imports: [
     CommonModule,
     FormsModule,

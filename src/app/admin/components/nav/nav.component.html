@@ -8,7 +8,7 @@
       <mat-nav-list>
         <a mat-list-item routerLink="/admin/book-form">Sección Libros</a>       
         <a mat-list-item routerLink="/admin">Home</a>
-        <button mat-list-item>Cerrar sesión</button>
+        <button mat-list-item (click)="logOut()">Cerrar sesión</button>
       </mat-nav-list>
     </mat-sidenav>
 

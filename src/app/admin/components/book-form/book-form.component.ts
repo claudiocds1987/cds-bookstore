@@ -7,9 +7,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Book } from 'src/app/core/models/book';
 import { Author} from 'src/app/core/models/author';
 // formuluario
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 
-import { MyValidators } from '../../../utils/myValidators';
 import { Observable } from 'rxjs';
 
 @Component({

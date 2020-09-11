@@ -19,7 +19,7 @@
                         <p class="text-center mt-1" *ngIf="form.get('year').hasError('max')">El año es invalido!</p>      
                     </div> 
                 </div>
-
+                
                 <div class="form-group">                   
                     <select [ngModelOptions]="{standalone: true}" 
                     [(ngModel)]="book.author" class="form-control" 
