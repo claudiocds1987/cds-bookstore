@@ -34,7 +34,7 @@ export class BookFormComponent implements OnInit {
 
   url = 'http://placehold.it/180';
 
- selectedFile = null;
+  selectedFile = null;
 
   constructor(
     public bookService: BookService,
@@ -75,27 +75,63 @@ export class BookFormComponent implements OnInit {
   addBook(event: Event) {
 
     event.preventDefault();
+    ////// ?????//////////////////////////////////////
     this.book = this.form.value;
-    // console.log(this.book);
-    if (this.form.valid)
-    {
-      if (confirm('¿Esta seguro/a que desea agregar el producto?'))
-      {
-        // 1ro guardo la imagen en firestorage
-        this.onUploadFile();
-        // obtengo los valores del formulario
-        this.book = this.form.value;
-        // inserta el producto en la db firestore
-        this.bookService.addBook(this.book);
-        // para limpiar el formulario
-        this.form.reset();
-        this.book = {} as Book;
-        // seteo la img <img> lado html
-        // this.url = 'http://placehold.it/180';
-        this.toastr.success('Operación exitosa', 'Producto agregado!');
-      }
-    }
+    this.book.image = this.selectedFile;
+    console.log(this.book.image);
+    this.bookService.addBook(this.book);
+    // para limpiar el formulario
+    this.form.reset();
+    // this.book = {} as Book;
+    this.toastr.success('Operación exitosa', 'Producto agregado!');
+
+    //////// ????////////////////////////////
+
+    // if (this.form.valid)
+    // {
+    //   if (confirm('¿Esta seguro/a que desea agregar el producto?'))
+    //   {
+    //     // 1ro guardo la imagen en firestorage
+    //     this.onUploadFile();
+    //     // obtengo los valores del formulario
+    //     this.book = this.form.value;
+    //     // inserta el producto en la db firestore
+    //     this.bookService.addBook(this.book);
+    //     // para limpiar el formulario
+    //     this.form.reset();
+    //     this.book = {} as Book;
+    //     // seteo la img <img> lado html
+    //     // this.url = 'http://placehold.it/180';
+    //     this.toastr.success('Operación exitosa', 'Producto agregado!');
+    //   }
+    // }
   }
+
+  subirImagen(event){
+     if (event.target.files.length !== 0 || event.target.files[0] != null )
+     {
+      // obtengo el archivo completo de la img (nombre, tipo, tamaño, etc..)
+      const file = event.target.files[0];
+      // obtengo solo el nombre de la imagen
+      const name = file.name;
+      const fileRef = this.storage.ref(name);
+      // subo imagen a firestorage con el nombre y todas sus prop(tipo, tamaño, etc..)
+      const task = this.storage.upload(name, file);
+      task.snapshotChanges()
+      .pipe(
+        finalize(() => {
+          this.image$ = fileRef.getDownloadURL();
+          // this.book.image = this.selectedFile;
+          this.image$.subscribe(url => {
+            this.selectedFile = url;
+        });
+      })
+    )
+    .subscribe();
+     }
+
+  }
+
 
   cleanUnnecessaryWhiteSpaces(cadena: string){
     const cleanString = cadena.replace(/\s{2,}/g, ' ').trim();
@@ -153,13 +189,16 @@ export class BookFormComponent implements OnInit {
       }else {
       const reader = new FileReader();
       reader.onload = (event: any) => {
-      this.url = event.target.result;
+        this.url = event.target.result;
       };
       reader.readAsDataURL(event.target.files[0]);
     }
   }
 
   onUploadFile() {
+
+    let path = '';
+
     // obtengo solo el nombre de la imagen
     const name = this.selectedFile.name;
     const fileRef = this.storage.ref(name);
@@ -173,10 +212,12 @@ export class BookFormComponent implements OnInit {
         this.image$ = fileRef.getDownloadURL();
         this.form.get('image').setValue(this.image$);
         this.image$.subscribe(url => {
+          path = url;
           console.log('path de firestorage: ' + url);
           // le asigno la url de la img guardada en firestorage
           // para que cuando traiga todos los libros de la db muestre la img de cada libro
-          // this.form.get('image').setValue(url);
+          this.form.get('image').setValue(url);
+          this.book.image = path;
         });
       })
     )
