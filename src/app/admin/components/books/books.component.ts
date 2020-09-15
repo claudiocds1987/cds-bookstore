@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 // services
 import { BookService } from '../../../core/services/book/book.service';
 import { ToastrService } from 'ngx-toastr';
 // class Book
 import { Book } from 'src/app/core/models/book';
+
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-books',
@@ -18,17 +20,28 @@ export class BooksComponent implements OnInit {
 
   constructor(
     public bookService: BookService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private sanitizer: DomSanitizer
     ) { }
 
   ngOnInit () {
+    this.fetchBooks();
     // al iniciar obtengo la lista de todos los libros
-    this.bookService.getBooks()
-    .subscribe(books => {
-      // console.log(books);
-      this.books = books;
-    });
+    // this.bookService.getBooks()
+    // .subscribe(books => {
+    //   // console.log(books);
+    //   //agrego todos los libros al array books
+    //   this.books = books;
+    //   console.log(this.books);
+    // });
   }
+
+  // Angular por consola tira WARNING: sanitizing unsafe URL etc..
+  // No es obligatorio, por las dudas desinfecto la URL para que sea seguro mostrarla en la interfaz de usuario
+  sanitizeImageUrl(imageUrl: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(imageUrl);
+  }
+
 
   deleteBook(event, book) {
     if (confirm('¿Esta seguro/a que desea borrar el producto?')){
@@ -53,6 +66,12 @@ export class BooksComponent implements OnInit {
       this.editing = false;
       this.toastr.success('Operación exitosa', 'Producto actualizado!');
     }
+  }
+
+  fetchBooks(){
+    this.bookService.getBooks().subscribe(books => {
+      this.books = books;
+    });
   }
 
 }

@@ -5,7 +5,9 @@
             <li *ngFor="let book of books" class="list-group-item list-group-item-action">                
                 <h3><b>{{book.name}}</b></h3>
                 <h5>Autor: {{book.author}}</h5>
-                <h5>Año: {{book.year}}</h5>                
+                <h5>Año: {{book.year}}</h5>
+                <!-- <img [src]="sanitizeImageUrl(book.image)" alt=""> -->
+                <img [src]="book.image" alt=""> 
                 <a class="btn btn-secondary text-white buton" (click)="editBook($event, book)">
                     <i class="fa fa-edit" aria-hidden="true"></i>
                     Editar

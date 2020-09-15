@@ -7,6 +7,7 @@ import { Book } from '../../models/book';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -35,12 +36,17 @@ export class BookService {
   }
 
   getBooks() {
+    // return this.http.get<Book[]>(`${environment.firebase}/books/`);
     return this.books$;
   }
 
   addBook(book: Book) {
     book.state = true;
-    this.booksColection.add(book);
+    this.booksColection.add(book)
+    .then(res => {
+      console.log(res);
+  });
+
   }
 
   deleteBook(book: Book) {

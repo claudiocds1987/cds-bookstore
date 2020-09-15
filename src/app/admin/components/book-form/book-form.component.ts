@@ -21,16 +21,18 @@ import { finalize } from 'rxjs/operators';
 })
 export class BookFormComponent implements OnInit {
 
-  cad: string;
+  // cad: string;
   form: FormGroup;
   // array de tipo Autor en vacio
-  authorList: Author[] = [];
+  // authorList: Author[] = [];
   authorList$: Observable<Author[]>;
   image$: Observable<any>;
   book = {} as Book; // declaro un objeto Book vacio, no es un array
   // obteniendo año actual
   today = new Date();
   year = this.today.getFullYear();
+
+  url = 'http://placehold.it/180';
 
  selectedFile = null;
 
@@ -71,24 +73,26 @@ export class BookFormComponent implements OnInit {
   }
 
   addBook(event: Event) {
+
     event.preventDefault();
     this.book = this.form.value;
-    console.log(this.book);
-    if (this.form.valid){
-      if (confirm('¿Esta seguro/a que desea agregar el producto?')){
+    // console.log(this.book);
+    if (this.form.valid)
+    {
+      if (confirm('¿Esta seguro/a que desea agregar el producto?'))
+      {
+        // 1ro guardo la imagen en firestorage
+        this.onUploadFile();
         // obtengo los valores del formulario
         this.book = this.form.value;
         // inserta el producto en la db firestore
         this.bookService.addBook(this.book);
-
-        // guardo la imagen en firestorage
-        this.onUploadFile();
-
         // para limpiar el formulario
         this.form.reset();
         this.book = {} as Book;
+        // seteo la img <img> lado html
+        // this.url = 'http://placehold.it/180';
         this.toastr.success('Operación exitosa', 'Producto agregado!');
-        // this.form.controls['btn-submmit'].enable();
       }
     }
   }
@@ -106,37 +110,6 @@ export class BookFormComponent implements OnInit {
     });
   }
 
-// esta va en input file
-  onFileSelected(event) {
-    // obtengo el archivo completo de la img (nombre, tipo, tamaño, etc..)
-    this.selectedFile = event.target.files[0];
-    console.log(this.selectedFile);
-
-  }
-
-  onUploadFile() {
-    // obtengo solo el nombre de la imagen
-    const name = this.selectedFile.name;
-    const fileRef = this.storage.ref(name);
-    // subo imagen a firestorage con el nombre y todas sus prop(tipo, tamaño, etc..)
-    const task = this.storage.upload(name, this.selectedFile);
-
-    // task.snapshotChanges()
-    // .pipe(
-    //   // finalize notifica cuando termina de subir la imagen
-    //   finalize(() => {
-    //     this.image$ = fileRef.getDownloadURL();
-    //     this.image$.subscribe(url => {
-    //       console.log(url);
-    //       // le paso la url de la img guardada firestorage, para mostar la img en el input image
-    //       this.form.get('image').setValue(url);
-    //     });
-    //   })
-    // )
-    // .subscribe();
-  }
-
-
   // uploadFile(event) {
   //   // obtengo el archivo completo de la img (nombre, tipo, tamaño, etc..)
   //   const file = event.target.files[0];
@@ -148,17 +121,66 @@ export class BookFormComponent implements OnInit {
 
   //   task.snapshotChanges()
   //   .pipe(
-  //     // finalize notifica cuando termina de subir la imagen
   //     finalize(() => {
   //       this.image$ = fileRef.getDownloadURL();
   //       this.image$.subscribe(url => {
-  //         console.log(url);
-  //         // le paso la url al image de mi form.group
+  //         console.log('ruta de firestorge: ' + url);
   //         this.form.get('image').setValue(url);
   //       });
   //     })
   //   )
   //   .subscribe();
   // }
+
+
+// esta va en input file lado html
+  onFileSelected(event) {
+    // obtengo el archivo completo de la img (nombre, tipo, tamaño, etc..)
+    this.selectedFile = event.target.files[0];
+    // console.log('Archivo seleccionado: ' + this.selectedFile.name);
+
+    // para mostrar la imagen seleccionada en etiqueta <img> lado html
+    // if (event.target.files && event.target.files[0]) {
+    //   const reader = new FileReader();
+    //   reader.onload = (event: any) => {
+    //    this.url = event.target.result;
+    //   };
+
+    //   reader.readAsDataURL(event.target.files[0]);
+    // }
+    if (event.target.files.length === 0 || event.target.files[0] == null ) {
+      // cuando este vacío
+      }else {
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+      this.url = event.target.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  }
+
+  onUploadFile() {
+    // obtengo solo el nombre de la imagen
+    const name = this.selectedFile.name;
+    const fileRef = this.storage.ref(name);
+    // subo imagen a firestorage con el nombre y todas sus prop(tipo, tamaño, etc..)
+    const task = this.storage.upload(name, this.selectedFile);
+
+    task.snapshotChanges()
+    .pipe(
+      // finalize notifica cuando termina de subir la imagen
+      finalize(() => {
+        this.image$ = fileRef.getDownloadURL();
+        this.form.get('image').setValue(this.image$);
+        this.image$.subscribe(url => {
+          console.log('path de firestorage: ' + url);
+          // le asigno la url de la img guardada en firestorage
+          // para que cuando traiga todos los libros de la db muestre la img de cada libro
+          // this.form.get('image').setValue(url);
+        });
+      })
+    )
+    .subscribe();
+  }
 
 }
