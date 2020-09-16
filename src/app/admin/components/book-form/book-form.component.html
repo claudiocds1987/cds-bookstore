@@ -72,13 +72,10 @@
                 </div>
 
                 <div class="form-group">
-                    <div class="text-center mb-3">
-                        <img class="img" [src]="url">
-                    </div>                   
                     <!-- <img *ngIf="(image$ | async) as image" [src]="image" alt=""> -->
                     <input type="file" class="form-control"
                     formControlName="image"
-                    (change)="subirImagen($event)">
+                    (change)="uploadImage($event)">
                 </div>
 
                 <div class="text-center">
