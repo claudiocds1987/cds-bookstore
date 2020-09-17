@@ -1,11 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
 // services
 import { BookService } from '../../../core/services/book/book.service';
+import { AuthorService } from '../../../core/services/author/author.service';
 import { ToastrService } from 'ngx-toastr';
 // class Book
 import { Book } from 'src/app/core/models/book';
 
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Observable } from 'rxjs';
+import { Author } from 'src/app/core/models/author';
 
 @Component({
   selector: 'app-books',
@@ -17,23 +20,18 @@ export class BooksComponent implements OnInit {
   books = [];
   editingBook: Book;
   editing: boolean = false;
+  authorList$: Observable<Author[]>;
 
   constructor(
     public bookService: BookService,
     private toastr: ToastrService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private authorService: AuthorService
     ) { }
 
   ngOnInit () {
     this.fetchBooks();
-    // al iniciar obtengo la lista de todos los libros
-    // this.bookService.getBooks()
-    // .subscribe(books => {
-    //   // console.log(books);
-    //   //agrego todos los libros al array books
-    //   this.books = books;
-    //   console.log(this.books);
-    // });
+    this.authorList$ = this.authorService.getAuthors();
   }
 
   // Angular por consola tira WARNING: sanitizing unsafe URL etc..

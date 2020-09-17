@@ -95,7 +95,8 @@ export class BookFormComponent implements OnInit {
   }
 
   uploadImage(event){
-     if (event.target.files.length !== 0 || event.target.files[0] != null )
+    // si se eligió la imagen
+    if (event.target.files.length !== 0 || event.target.files[0] != null )
      {
       // obtengo el archivo completo de la img (nombre, tipo, tamaño, etc..)
       const file = event.target.files[0];
