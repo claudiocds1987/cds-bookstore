@@ -33,18 +33,30 @@
                     </div>               
                 </div>
 
-                <div class="form-group">
-                    <input type="text" class="form-control" formControlName="category" [(ngModel)]="book.category" placeholder="Category">
-                    <div *ngIf="form.get('category').errors && form.get('category').dirty">
-                        <p class="text-center mt-1" *ngIf="form.get('category').hasError('required')">Este campo es obligatorio!</p>      
-                    </div> 
+                <div class="form-group">                   
+                    <select [ngModelOptions]="{standalone: true}" 
+                    [(ngModel)]="book.category" class="form-control" 
+                    FormControlName="category" (change)="selectCategory($event)">                       
+                        <option *ngFor="let category of categoryList$ | async" [value]="category.name">
+                              {{category.name}}
+                        </option>
+                    </select>
+                    <div *ngIf="form.get('category').invalid && form.dirty" class="error">
+                        <p *ngIf="form.get('category').hasError('invalid')">Profile required.</p>
+                    </div>               
                 </div>
 
-                <div class="form-group">
-                    <input type="text" class="form-control" formControlName="editorial" [(ngModel)]="book.editorial" placeholder="Editorial">
-                    <div *ngIf="form.get('editorial').errors && form.get('editorial').dirty">
-                        <p class="text-center mt-1" *ngIf="form.get('editorial').hasError('required')">Este campo es obligatorio!</p>      
-                    </div> 
+                <div class="form-group">                   
+                    <select [ngModelOptions]="{standalone: true}" 
+                    [(ngModel)]="book.editorial" class="form-control" 
+                    FormControlName="editorial" (change)="selectEditorial($event)">                       
+                        <option *ngFor="let editorial of editorialList$ | async" [value]="editorial.name">
+                              {{editorial.name}}
+                        </option>
+                    </select>
+                    <div *ngIf="form.get('editorial').invalid && form.dirty" class="error">
+                        <p *ngIf="form.get('editorial').hasError('invalid')">Profile required.</p>
+                    </div>               
                 </div>
 
                 <div class="form-group">

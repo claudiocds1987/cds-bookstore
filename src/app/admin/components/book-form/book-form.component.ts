@@ -2,10 +2,14 @@ import { Component, OnInit } from '@angular/core';
 // services
 import { BookService } from '../../../core/services/book/book.service';
 import { AuthorService } from '../../../core/services/author/author.service';
+import { CategoryService } from '../../../core/services/category/category.service';
+import { EditorialService } from '../../../core/services/editorial/editorial.service';
 import { ToastrService } from 'ngx-toastr';
-// clase Book, Author
+// clase Book, Author, category, editorial
 import { Book } from 'src/app/core/models/book';
 import { Author} from 'src/app/core/models/author';
+import { Category } from 'src/app/core/models/category';
+import { Editorial } from 'src/app/core/models/editorial';
 // formuluario
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -26,6 +30,8 @@ export class BookFormComponent implements OnInit {
   // array de tipo Autor en vacio
   // authorList: Author[] = [];
   authorList$: Observable<Author[]>;
+  categoryList$: Observable<Category[]>;
+  editorialList$: Observable<Category[]>;
   image$: Observable<any>;
   book = {} as Book; // declaro un objeto Book vacio, no es un array
   // obteniendo año actual
@@ -39,16 +45,19 @@ export class BookFormComponent implements OnInit {
   constructor(
     public bookService: BookService,
     public authorService: AuthorService,
+    public categoryService: CategoryService,
+    public editorialService: EditorialService,
     private toastr: ToastrService,
     private formBuilder: FormBuilder,
     private storage: AngularFireStorage
     ) {
-      // function buildForm
-      this.buildForm();
+      this.buildForm(); // function buildForm
     }
 
   ngOnInit(): void {
     this.authorList$ = this.authorService.getAuthors();
+    this.categoryList$ = this.categoryService.getCategories();
+    this.editorialList$ = this.editorialService.getEditorials();
     // this.authorService.getAuthors()
     // .subscribe(author => {
     //   // console.log(books);
@@ -57,14 +66,13 @@ export class BookFormComponent implements OnInit {
   }
 
   buildForm() {
-    // const numericNumberReg = '^-?[0-9]\\d*(\\.\\d{1,2})?$';
     this.form = this.formBuilder.group({
       name: ['', [Validators.required, Validators.maxLength(50)]],
       year: ['', [Validators.required, Validators.max(this.year)]],
       author: ['', [Validators.required]],
       category: ['', [Validators.required]],
       editorial: ['', [Validators.required]],
-      description: ['', [Validators.required, Validators.maxLength(300)]],
+      description: ['', [Validators.required, Validators.maxLength(500)]],
       quantity: ['', [Validators.required]],
       price: [0, [Validators.required]],
       image: [''],
@@ -132,6 +140,19 @@ export class BookFormComponent implements OnInit {
     });
   }
 
+  selectCategory(e) {
+    // obtengo el control select y le paso el valor seleccionado en el html
+    this.form.get('category').setValue(e.target.value, {
+       onlySelf: true
+    });
+  }
+
+  selectEditorial(e) {
+    // obtengo el control select y le paso el valor seleccionado en el html
+    this.form.get('editorial').setValue(e.target.value, {
+       onlySelf: true
+    });
+  }
 
 }
 
