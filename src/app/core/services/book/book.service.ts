@@ -13,7 +13,7 @@ import { map } from 'rxjs/operators';
 })
 export class BookService {
 
-  booksColection: AngularFirestoreCollection<Book>;
+  booksCollection: AngularFirestoreCollection<Book>;
   books$: Observable<any[]>;
   bookDoc: AngularFirestoreDocument<Book>;
 
@@ -22,9 +22,9 @@ export class BookService {
     this.books = this.db.collection('books').valueChanges();*/
 
     // esta consulta trae todos los libros con su id
-    this.booksColection = this.db.collection('books');
+    this.booksCollection = this.db.collection('books');
     // snapshotChanges() trae la actualizacion de los datos de la db cuando cambian
-    this.books$ = this.booksColection.snapshotChanges()
+    this.books$ = this.booksCollection.snapshotChanges()
     // actions son los datos de la db (angular los llama de esa forma "actions")
     .pipe(map(actions => {
       return actions.map(a => {
@@ -42,11 +42,10 @@ export class BookService {
 
   addBook(book: Book) {
     book.state = true;
-    this.booksColection.add(book)
+    this.booksCollection.add(book)
     .then(res => {
       console.log(res);
-  });
-
+    });
   }
 
   deleteBook(book: Book) {
@@ -57,6 +56,14 @@ export class BookService {
   updateBook(book: Book) {
     this.bookDoc = this.db.doc(`books/${book.id}`); // las comillas son alt + 96
     this.bookDoc.update(book);
+  }
+
+  // devuelve cuantos documentos hay en mi coleccion de books de la db
+  getSizeCollectionBooks() {
+    this.db.collection('books').valueChanges()
+    .subscribe(result => {
+    return result.length;
+    });
   }
 
 }

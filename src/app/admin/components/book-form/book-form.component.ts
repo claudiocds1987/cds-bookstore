@@ -17,6 +17,7 @@ import { Observable } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/storage';
 // finalize es un pipe que hace el proceso de finalizacion al subir la imagen
 import { finalize } from 'rxjs/operators';
+import { AngularFirestoreCollection } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-book-form',
@@ -25,10 +26,8 @@ import { finalize } from 'rxjs/operators';
 })
 export class BookFormComponent implements OnInit {
 
-  // cad: string;
   form: FormGroup;
-  // array de tipo Autor en vacio
-  // authorList: Author[] = [];
+
   authorList$: Observable<Author[]>;
   categoryList$: Observable<Category[]>;
   editorialList$: Observable<Category[]>;
@@ -82,6 +81,10 @@ export class BookFormComponent implements OnInit {
 
   addBook(event: Event) {
 
+    // const sizeCollection = this.bookService.getSizeCollectionBooks();
+    // if(sizeCollection.length > 0){
+    //   this.book.id = sizeCollection + 1;
+    // }
     event.preventDefault();
     if (this.form.valid)
     {
